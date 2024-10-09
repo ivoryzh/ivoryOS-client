@@ -13,3 +13,16 @@ It mirrors the control Python code features but sending command through HTTP req
 pip install git+https://gitlab.com/heingroup/ivoryos
 ```
 
+## usage
+in terminal, use ivoryos-client + ivoryos server url
+```bash
+ivoryos-client http://localhost:8000
+```
+this will create a Python script `generated_classes.py` with all API instances created.
+
+```Python
+from example import *
+```
+
+## Example 
+classes generated ([generated_classes.py](example/generated_classes.py)) for abstract_sdl.py in [SDL examples](https://gitlab.com/heingroup/ivoryos/-/tree/main/example/sdl_example)
