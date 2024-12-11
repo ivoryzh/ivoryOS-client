@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ivoryos-client',  # Name of your package
-    version='0.1.0',  # Version number
+    version='0.1.1',  # Version number
     author='Ivory Zhang',
     author_email='ivoryzhang@chem.ubc.ca',
     description='A dynamic client script for generating Python APIs for interacting with SDLs via IvoryOS server',
