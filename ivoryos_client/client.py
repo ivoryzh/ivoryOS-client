@@ -53,8 +53,8 @@ def export_to_python(class_definitions):
             instance_name = class_name.lower()  # Using lowercase for instance names
             f.write(f'{instance_name} = {class_name.capitalize()}()\n')
 
-def generate_proxy_script(url):
-    snapshot = session.get(f"{url}/backend_client").json()
+def generate_proxy_script(url, url_prefix="ivoryos"):
+    snapshot = session.get(f"{url}/{url_prefix}/backend_control").json()
     class_definitions = {}
     for class_path, functions in snapshot.items():
         class_name = class_path.split('.')[-1]  # Extracting the class name from the path
@@ -66,15 +66,13 @@ def generate_proxy_script(url):
 def main():
     parser = argparse.ArgumentParser(description="API generation from SDL snapshot on IvoryOS server")
     parser.add_argument('url', type=str, help='The URL to connect to the server')
+    parser.add_argument('--url_prefix', type=str, help='The URL prefix.', default='ivoryos')
     args = parser.parse_args()
 
     # Now use the URL in your script
     url = args.url
-    generate_proxy_script(url)
+    url_prefix = args.url_prefix
+    generate_proxy_script(url, url_prefix=url_prefix)
 
 if __name__ == "__main__":
-
-    # example
-    url = 'http://localhost:8000'
-    generate_proxy_script(url)
-
+    main()
