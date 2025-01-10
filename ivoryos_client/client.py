@@ -26,7 +26,7 @@ def create_function(url, url_prefix, class_name, functions):
             method += f'        """{docstring}"""\n'
 
         # Generating the session.post code for sending data
-        method += '        session.post(self.url, data={'
+        method += '        return session.post(self.url, data={'
         method += f'"hidden_name": "{function_name}"'
 
         # Extracting the parameters from the signature string for the data payload
@@ -37,7 +37,7 @@ def create_function(url, url_prefix, class_name, functions):
             param_name = param.split(':')[0].strip()  # Split on ':' and get parameter name
             method += f', "{param_name}": {param_name}'
 
-        method += '})\n'
+        method += '}).json()\n'
         class_template += method + '\n'
 
     return class_template
