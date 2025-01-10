@@ -1,0 +1,4 @@
+## v0.1.2
+
+- Add error handling for ivoryOS not running
+- Add return in generated code
