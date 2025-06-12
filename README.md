@@ -1,5 +1,11 @@
-# ivoryOS Client
+# ivoryOS RPC client
 
+> 📌 **Note:** This project has been merged into the main [Ivory OS repository](https://gitlab.com/heingroup/ivoryos/-/blob/main/ivoryos/utils/client_proxy.py).  
+> You can now download the remote proxy directly from the **Devices** tab at `/ivoryos/download/proxy` (http://localhost:8000/ivoryos/download/proxy).
+
+> ⚠️ **This repository is no longer actively maintained.** Please use the Ivory OS repository for the latest updates and support.
+
+## Description
 [ivoryOS](https://gitlab.com/heingroup/ivoryos) client automates the generation of client-side APIs based on server-defined robotic control script. 
 It mirrors the control Python code features but sending command through HTTP request to the ivoryOS backend (where the actual robotic communication are happening) that receives the info and execute the actual control methods.
 
