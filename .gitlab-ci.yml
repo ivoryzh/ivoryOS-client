@@ -6,7 +6,7 @@ stages:
 deploy:
   stage: deploy
   variables:
-    TWINE_USERNAME: $PYPI_USERNAME
+    TWINE_USERNAME: $PYPI_IVORY_USERNAME
     TWINE_PASSWORD: $PYPI_IVORY_PASSWORD
   image: python:3.10-slim
   before_script:
