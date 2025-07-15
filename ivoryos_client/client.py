@@ -71,7 +71,7 @@ class IvoryosClient:
         except Exception as e:
             raise IvoryosError(f"Failed to get platform info: {e}") from e
 
-    def get_execution_status(self) -> Dict[str, Any]:
+    def get_execution_status(self):
         """
         Get workflow execution status
 
@@ -90,7 +90,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error getting workflow status: {e}") from e
 
-    def execute_task(self, component: str, method: str, kwargs: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def execute_task(self, component: str, method: str, kwargs: Optional[Dict[str, Any]] = None):
         """
         Execute a robot task
 
@@ -126,7 +126,7 @@ class IvoryosClient:
                 raise
             raise TaskError(f"Error executing task: {e}") from e
 
-    def list_workflow_scripts(self, search_key: str = '', deck_name: str = '') -> Dict[str, Any]:
+    def list_workflow_scripts(self, search_key: str = '', deck_name: str = ''):
         """
         List workflow scripts
 
@@ -152,7 +152,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error listing workflow scripts: {e}") from e
 
-    def load_workflow_script(self, workflow_name: str) -> Dict[str, Any]:
+    def load_workflow_script(self, workflow_name: str):
         """
         Load a workflow script
 
@@ -175,7 +175,7 @@ class IvoryosClient:
             raise WorkflowError(f"Error loading workflow script: {e}") from e
 
     def submit_workflow_script(self, workflow_name: str, main_script: str = "",
-                               cleanup_script: str = "", prep_script: str = "") -> str:
+                               cleanup_script: str = "", prep_script: str = ""):
         """
         Submit a workflow script
 
@@ -208,7 +208,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error submitting workflow script: {e}") from e
 
-    def pause_and_resume(self) -> Dict[str, Any]:
+    def pause_and_resume(self):
         """
         Toggle pause and resume for workflow execution
 
@@ -227,7 +227,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error toggling workflow pause/resume: {e}") from e
 
-    def abort_pending_workflow(self) -> Dict[str, Any]:
+    def abort_pending_workflow(self):
         """
         Abort pending workflow execution
 
@@ -246,7 +246,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error aborting pending workflow: {e}") from e
 
-    def stop_current_workflow(self) -> Dict[str, Any]:
+    def stop_current_workflow(self):
         """
         Stop workflow execution after current step
 
@@ -265,7 +265,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error stopping current workflow: {e}") from e
 
-    def run_workflow_repeat(self, repeat_time: Optional[int] = None) -> Dict[str, Any]:
+    def run_workflow_repeat(self, repeat_time: Optional[int] = None):
         """
         Run the loaded workflow with repeat times
 
@@ -290,7 +290,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error starting workflow execution: {e}") from e
 
-    def run_workflow_kwargs(self, kwargs_list: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    def run_workflow_kwargs(self, kwargs_list: Optional[List[Dict[str, Any]]] = None):
         """
         Run the loaded workflow with a list of keyword arguments
 
@@ -318,7 +318,7 @@ class IvoryosClient:
     def run_workflow_campaign(self, parameters: List[Dict[str, Any]],
                               objectives: List[Dict[str, Any]],
                               repeat: int = 25,
-                              parameter_constraints: Optional[List[str]] = None) -> Dict[str, Any]:
+                              parameter_constraints: Optional[List[str]] = None):
         """
         Run the loaded workflow with ax-platform
 
@@ -354,7 +354,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error starting workflow campaign: {e}") from e
 
-    def list_workflow_data(self, workflow_name: str = "") -> Dict[str, Any]:
+    def list_workflow_data(self, workflow_name: str = ""):
         """
         List workflow data
 
@@ -379,7 +379,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error listing workflow data: {e}") from e
 
-    def load_workflow_data(self, workflow_id: int) -> Dict[str, Any]:
+    def load_workflow_data(self, workflow_id: int):
         """
         Load workflow data
 
@@ -400,3 +400,8 @@ class IvoryosClient:
             if isinstance(e, (AuthenticationError, ConnectionError, WorkflowError)):
                 raise
             raise WorkflowError(f"Error loading workflow data: {e}") from e
+
+
+if __name__ == "__main__":
+    client = IvoryosClient()
+    print(client.list_workflow_data())
