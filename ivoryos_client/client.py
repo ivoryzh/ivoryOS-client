@@ -1,6 +1,6 @@
 from typing import Optional, Dict, List, Any
 import httpx
-from .exceptions import (
+from exceptions import (
     IvoryosError,
     AuthenticationError,
     ConnectionError,
@@ -140,7 +140,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.get(
-                f"{self.url}/library/scripts/{deck_name}",
+                f"{self.url}/library/get/{deck_name}",
                 params={"keyword": search_key}
             )
             if resp.status_code == httpx.codes.OK:
@@ -164,7 +164,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/library/scripts/edit/{workflow_name}")
+            resp = self.client.get(f"{self.url}/library/edit/{workflow_name}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -367,7 +367,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.get(
-                f"{self.url}/data/workflows/",
+                f"{self.url}/data/all",
                 params={"keyword": workflow_name}
             )
             if resp.status_code == httpx.codes.OK:
@@ -391,7 +391,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/data/workflows/{workflow_id}")
+            resp = self.client.get(f"{self.url}/data/get/{workflow_id}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -403,5 +403,10 @@ class IvoryosClient:
 
 
 if __name__ == "__main__":
-    client = IvoryosClient()
+    client = IvoryosClient(
+        url="http://localhost:8000/ivoryos",
+        username="admin",
+        password="admin"
+    )
+
     print(client.list_workflow_data())
