@@ -140,7 +140,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.get(
-                f"{self.url}/database/scripts/{deck_name}",
+                f"{self.url}/library/scripts/{deck_name}",
                 params={"keyword": search_key}
             )
             if resp.status_code == httpx.codes.OK:
@@ -164,7 +164,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/database/scripts/edit/{workflow_name}")
+            resp = self.client.get(f"{self.url}/library/scripts/edit/{workflow_name}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -191,7 +191,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                url=f"{self.url}/api/design/submit",
+                url=f"{self.url}/design/submit_python",
                 json={
                     "workflow_name": workflow_name,
                     "script": main_script,
@@ -278,7 +278,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                f"{self.url}/design/campaign",
+                f"{self.url}/execute/campaign",
                 json={"repeat": str(repeat_time) if repeat_time is not None else None}
             )
             if resp.status_code == httpx.codes.OK:
@@ -303,7 +303,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                f"{self.url}/design/campaign",
+                f"{self.url}/execute/campaign",
                 json={"kwargs": kwargs_list}
             )
             if resp.status_code == httpx.codes.OK:
@@ -337,7 +337,7 @@ class IvoryosClient:
                 parameter_constraints = []
 
             resp = self.client.post(
-                f"{self.url}/design/campaign",
+                f"{self.url}/execute/campaign",
                 json={
                     "parameters": parameters,
                     "objectives": objectives,
@@ -367,7 +367,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.get(
-                f"{self.url}/database/workflows/",
+                f"{self.url}/data/workflows/",
                 params={"keyword": workflow_name}
             )
             if resp.status_code == httpx.codes.OK:
@@ -391,7 +391,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/database/workflows/{workflow_id}")
+            resp = self.client.get(f"{self.url}/data/workflows/{workflow_id}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
