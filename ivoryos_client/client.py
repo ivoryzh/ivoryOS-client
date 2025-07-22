@@ -1,6 +1,6 @@
 from typing import Optional, Dict, List, Any
 import httpx
-from exceptions import (
+from ivoryos_client.exceptions import (
     IvoryosError,
     AuthenticationError,
     ConnectionError,
