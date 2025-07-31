@@ -80,7 +80,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/api/runner/status")
+            resp = self.client.get(f"{self.url}/executions/status")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -139,9 +139,14 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
+            params = {}
+            if deck_name:
+                params['deck'] = deck_name
+            if search_key:
+                params['keyword'] = search_key
             resp = self.client.get(
-                f"{self.url}/library/get/{deck_name}",
-                params={"keyword": search_key}
+                f"{self.url}/library/{deck_name}",
+                params=params
             )
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
@@ -164,7 +169,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/library/edit/{workflow_name}")
+            resp = self.client.get(f"{self.url}/library/{workflow_name}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -217,7 +222,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.post(f"{self.url}/api/runner/pause")
+            resp = self.client.post(f"{self.url}/executions/pause-resume")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -236,7 +241,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.post(f"{self.url}/api/runner/abort_pending")
+            resp = self.client.post(f"{self.url}/executions/abort/next-iteration")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -255,7 +260,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.post(f"{self.url}/api/runner/abort_current")
+            resp = self.client.post(f"{self.url}/executions/abort/next-task")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -278,7 +283,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                f"{self.url}/execute/campaign",
+                f"{self.url}/executions/config",
                 json={"repeat": str(repeat_time) if repeat_time is not None else None}
             )
             if resp.status_code == httpx.codes.OK:
@@ -303,7 +308,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                f"{self.url}/execute/campaign",
+                f"{self.url}/executions/campaign",
                 json={"kwargs": kwargs_list}
             )
             if resp.status_code == httpx.codes.OK:
@@ -337,7 +342,7 @@ class IvoryosClient:
                 parameter_constraints = []
 
             resp = self.client.post(
-                f"{self.url}/execute/campaign",
+                f"{self.url}/executions/campaign",
                 json={
                     "parameters": parameters,
                     "objectives": objectives,
@@ -367,7 +372,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.get(
-                f"{self.url}/data/all",
+                f"{self.url}/executions/records",
                 params={"keyword": workflow_name}
             )
             if resp.status_code == httpx.codes.OK:
@@ -391,7 +396,7 @@ class IvoryosClient:
         """
         try:
             self._check_authentication()
-            resp = self.client.get(f"{self.url}/data/get/{workflow_id}")
+            resp = self.client.get(f"{self.url}/executions/records/{workflow_id}")
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
