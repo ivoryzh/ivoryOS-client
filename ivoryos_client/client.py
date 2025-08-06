@@ -196,7 +196,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                url=f"{self.url}/design/submit_python",
+                url=f"{self.url}/draft/submit_python",
                 json={
                     "workflow_name": workflow_name,
                     "script": main_script,
