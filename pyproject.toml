@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ivoryos-client"
-version = "0.2.5"
+dynamic = ["version"]
 description = "Python client for IvoryOS workflow orchestrator"
 readme = "README.md"
 license = {text = "MIT"}
@@ -51,3 +51,6 @@ dev = [
 
 [tool.setuptools.package-dir]
 # Remove this section since packages are in root directory
+
+[tool.setuptools.dynamic]
+version = {attr = "ivoryos_client.__version__"}

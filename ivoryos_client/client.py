@@ -11,7 +11,7 @@ from ivoryos_client.exceptions import (
 class IvoryosClient:
     """Client for interacting with IvoryOS API"""
 
-    def __init__(self, url: str, username: str, password: str, timeout: float = 30.0):
+    def __init__(self, url: str, username: str, password: str):
         """
         Initialize IvoryOS client
 
@@ -23,7 +23,7 @@ class IvoryosClient:
         """
         self.url = url.rstrip('/')
         self.login_data = {"username": username, "password": password}
-        self.client = httpx.Client(follow_redirects=True, timeout=timeout)
+        self.client = httpx.Client(follow_redirects=True)
 
     def __enter__(self):
         """Context manager entry"""
@@ -58,12 +58,13 @@ class IvoryosClient:
             Platform information string
         """
         try:
-            snapshot = self.client.get(f"{self.url}/api/control").json()
+            self._check_authentication()
+            snapshot = self.client.get(f"{self.url}/instruments").json()
             return (
-                "IvoryOS is a unified task and workflow orchestrator.\n"
+                # f"IvoryOS is a unified task and workflow orchestrator.\n"
                 "workflow execution has 3 blocks, prep, main (iterate) and cleanup.\n"
-                "one can execute the workflow using 3 options:\n"
-                "1. simple repeat with `run_workflow_repeat`\n"
+                "one can execute the workflow using one of the 3 options:\n"
+                "1. simple repeat for static workflow with `run_workflow_repeat`\n"
                 "2. repeat with kwargs `run_workflow_kwargs`\n"
                 "3. campaign `run_workflow_campaign`\n"
                 f"Available functions: {snapshot}"
@@ -107,7 +108,7 @@ class IvoryosClient:
             if kwargs is None:
                 kwargs = {}
 
-            snapshot = self.client.get(f"{self.url}/api/control").json()
+            snapshot = self.client.get(f"{self.url}/instruments").json()
             component = component if component.startswith("deck.") else f"deck.{component}"
 
             if component not in snapshot:
@@ -116,7 +117,7 @@ class IvoryosClient:
             kwargs["hidden_name"] = method
             kwargs["hidden_wait"] = False
 
-            resp = self.client.post(f"{self.url}/api/control/{component}", data=kwargs)
+            resp = self.client.post(f"{self.url}/instruments/{component}", json=kwargs)
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
             else:
@@ -308,7 +309,7 @@ class IvoryosClient:
         try:
             self._check_authentication()
             resp = self.client.post(
-                f"{self.url}/executions/campaign",
+                f"{self.url}/executions/config",
                 json={"kwargs": kwargs_list}
             )
             if resp.status_code == httpx.codes.OK:
@@ -342,7 +343,7 @@ class IvoryosClient:
                 parameter_constraints = []
 
             resp = self.client.post(
-                f"{self.url}/executions/campaign",
+                f"{self.url}/executions/config",
                 json={
                     "parameters": parameters,
                     "objectives": objectives,
