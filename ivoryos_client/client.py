@@ -109,7 +109,7 @@ class IvoryosClient:
                 kwargs = {}
 
             snapshot = self.client.get(f"{self.url}/instruments").json()
-            component = component if component.startswith("deck.") else f"deck.{component}"
+            # component = component if component.startswith("deck.") else f"deck.{component}"
 
             if component not in snapshot:
                 raise TaskError(f"Component {component} does not exist. Available: {list(snapshot.keys())}")
