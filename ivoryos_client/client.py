@@ -271,7 +271,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error stopping current workflow: {e}") from e
 
-    def run_workflow_repeat(self, repeat_time: Optional[int] = None):
+    def run_workflow_repeat(self, repeat_time: Optional[int] = None, batch_size: Optional[int] = None,):
         """
         Run the loaded workflow with repeat times
 
@@ -285,7 +285,10 @@ class IvoryosClient:
             self._check_authentication()
             resp = self.client.post(
                 f"{self.url}/executions/config",
-                json={"repeat": str(repeat_time) if repeat_time is not None else None}
+                json={
+                    "repeat": str(repeat_time) if repeat_time is not None else None,
+                    "batch_size": batch_size if repeat_time is not None else None
+                }
             )
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
@@ -296,7 +299,7 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error starting workflow execution: {e}") from e
 
-    def run_workflow_kwargs(self, kwargs_list: Optional[List[Dict[str, Any]]] = None):
+    def run_workflow_kwargs(self, kwargs_list: Optional[List[Dict[str, Any]]] = None, batch_size: int = 1):
         """
         Run the loaded workflow with a list of keyword arguments
 
@@ -310,7 +313,7 @@ class IvoryosClient:
             self._check_authentication()
             resp = self.client.post(
                 f"{self.url}/executions/config",
-                json={"kwargs": kwargs_list}
+                json={"kwargs": kwargs_list, "batch_size": batch_size}
             )
             if resp.status_code == httpx.codes.OK:
                 return resp.json()
@@ -349,6 +352,63 @@ class IvoryosClient:
                     "objectives": objectives,
                     "parameter_constraints": parameter_constraints,
                     "repeat": repeat,
+                }
+            )
+            if resp.status_code == httpx.codes.OK:
+                return resp.json()
+            else:
+                raise WorkflowError(f"Failed to start workflow campaign: {resp.status_code}")
+        except Exception as e:
+            if isinstance(e, (AuthenticationError, ConnectionError, WorkflowError)):
+                raise
+            raise WorkflowError(f"Error starting workflow campaign: {e}") from e
+
+    def run_workflow_campaign_wip(self,
+                                  optimizer_type: str,
+                                  parameters: List[Dict[str, Any]],
+                                  objectives: List[Dict[str, Any]],
+                                  repeat: int = 25,
+                                  batch_size: int = 1,
+                                  steps={},
+                                  parameter_constraints: Optional[List[str]] = None,
+                                  existing_data:Optional[str] = None):
+        """
+        Run the loaded workflow with ax-platform
+
+        Args:
+            optimizer_type: Optimizer type in ["baybe", "ax", "nimo"]
+            parameters: List of parameter definitions [
+                {'name': 'x1', 'type': 'range', 'value_type': 'float', 'bounds': [-5.0, 10.0]},
+                {'name': 'x2', 'type': 'range', 'value_type': 'float', 'bounds': [0.0, 10.0]}
+            ]
+            objectives: List of objective definitions
+            [
+                {'name': 'result', 'minimize': True}
+            ]
+            repeat: Number of iterations
+            batch_size: Batch size
+            parameter_constraints: List of parameter constraints
+
+        Returns:
+            Response from the server
+        """
+
+        try:
+            self._check_authentication()
+            if parameter_constraints is None:
+                parameter_constraints = []
+
+            resp = self.client.post(
+                f"{self.url}/executions/campaign",
+                json={
+                    "optimizer_type": optimizer_type,
+                    "parameters": parameters,
+                    "objectives": objectives,
+                    "batch_size": batch_size,
+                    "steps": steps,
+                    "parameter_constraints": parameter_constraints,
+                    "repeat": repeat,
+                    "existing_data": existing_data
                 }
             )
             if resp.status_code == httpx.codes.OK:
@@ -415,4 +475,18 @@ if __name__ == "__main__":
         password="admin"
     )
 
+    optimizer_type="ax"
+    parameters = [
+        {'name': 'x1', 'type': 'range', 'value_type': 'float', 'bounds': [-5.0, 10.0]},
+        {'name': 'x2', 'type': 'range', 'value_type': 'float', 'bounds': [0.0, 10.0]}
+    ]
+    objectives = [
+        {'name': 'result', 'minimize': True}
+    ]
+    steps = {'step_1': {'model': 'Sobol', 'num_samples': 5}, 'step_2': {'model': 'BoTorch'}}
+    parameter_constraints = ["x1 + x2 <= 10"]
+    repeat = 2
+    batch_size = 2
+
+    client.run_workflow_campaign(optimizer_type=optimizer_type, parameters=parameters, objectives=objectives, repeat=repeat, batch_size=batch_size, parameter_constraints=parameter_constraints,steps=steps)
     print(client.list_workflow_data())
