@@ -324,54 +324,54 @@ class IvoryosClient:
                 raise
             raise WorkflowError(f"Error starting workflow execution: {e}") from e
 
-    def run_workflow_campaign(self, parameters: List[Dict[str, Any]],
+    # def run_workflow_campaign(self, parameters: List[Dict[str, Any]],
+    #                           objectives: List[Dict[str, Any]],
+    #                           repeat: int = 25,
+    #                           parameter_constraints: Optional[List[str]] = None):
+    #     """
+    #     Run the loaded workflow with ax-platform
+    #
+    #     Args:
+    #         parameters: List of parameter definitions
+    #         objectives: List of objective definitions
+    #         repeat: Number of iterations
+    #         parameter_constraints: List of parameter constraints
+    #
+    #     Returns:
+    #         Response from the server
+    #     """
+    #     try:
+    #         self._check_authentication()
+    #         if parameter_constraints is None:
+    #             parameter_constraints = []
+    #
+    #         resp = self.client.post(
+    #             f"{self.url}/executions/config",
+    #             json={
+    #                 "parameters": parameters,
+    #                 "objectives": objectives,
+    #                 "parameter_constraints": parameter_constraints,
+    #                 "repeat": repeat,
+    #             }
+    #         )
+    #         if resp.status_code == httpx.codes.OK:
+    #             return resp.json()
+    #         else:
+    #             raise WorkflowError(f"Failed to start workflow campaign: {resp.status_code}")
+    #     except Exception as e:
+    #         if isinstance(e, (AuthenticationError, ConnectionError, WorkflowError)):
+    #             raise
+    #         raise WorkflowError(f"Error starting workflow campaign: {e}") from e
+
+    def run_workflow_campaign(self,
+                              optimizer_type: str,
+                              parameters: List[Dict[str, Any]],
                               objectives: List[Dict[str, Any]],
                               repeat: int = 25,
-                              parameter_constraints: Optional[List[str]] = None):
-        """
-        Run the loaded workflow with ax-platform
-
-        Args:
-            parameters: List of parameter definitions
-            objectives: List of objective definitions
-            repeat: Number of iterations
-            parameter_constraints: List of parameter constraints
-
-        Returns:
-            Response from the server
-        """
-        try:
-            self._check_authentication()
-            if parameter_constraints is None:
-                parameter_constraints = []
-
-            resp = self.client.post(
-                f"{self.url}/executions/config",
-                json={
-                    "parameters": parameters,
-                    "objectives": objectives,
-                    "parameter_constraints": parameter_constraints,
-                    "repeat": repeat,
-                }
-            )
-            if resp.status_code == httpx.codes.OK:
-                return resp.json()
-            else:
-                raise WorkflowError(f"Failed to start workflow campaign: {resp.status_code}")
-        except Exception as e:
-            if isinstance(e, (AuthenticationError, ConnectionError, WorkflowError)):
-                raise
-            raise WorkflowError(f"Error starting workflow campaign: {e}") from e
-
-    def run_workflow_campaign_wip(self,
-                                  optimizer_type: str,
-                                  parameters: List[Dict[str, Any]],
-                                  objectives: List[Dict[str, Any]],
-                                  repeat: int = 25,
-                                  batch_size: int = 1,
-                                  steps={},
-                                  parameter_constraints: Optional[List[str]] = None,
-                                  existing_data:Optional[str] = None):
+                              batch_size: int = 1,
+                              steps={},
+                              parameter_constraints: Optional[List[str]] = None,
+                              existing_data:Optional[str] = None):
         """
         Run the loaded workflow with ax-platform
 
