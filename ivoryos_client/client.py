@@ -363,6 +363,32 @@ class IvoryosClient:
     #             raise
     #         raise WorkflowError(f"Error starting workflow campaign: {e}") from e
 
+    def get_optimizer_schema(self, optimizer_type: str = None):
+        """
+        get optimizer schema for a given optimizer type
+        get all optimizer schemas if optimizer_type is None
+
+        Args:
+            optimizer_type: Optimizer type in ["baybe", "ax", "nimo"]
+
+        Returns:
+            Response from the server
+        """
+        try:
+            self._check_authentication()
+            resp = self.client.post(
+                f"{self.url}/executions/optimizer_schema",
+                json={"optimizer_type": optimizer_type}
+            )
+            if resp.status_code == httpx.codes.OK:
+                return resp.json()
+            else:
+                raise WorkflowError(f"Failed to get optimizer schema: {resp.status_code}")
+        except Exception as e:
+            if isinstance(e, (AuthenticationError, ConnectionError, WorkflowError)):
+                raise
+            raise WorkflowError(f"Error getting optimizer schema: {e}") from e
+
     def run_workflow_campaign(self,
                               optimizer_type: str,
                               parameters: List[Dict[str, Any]],
@@ -385,10 +411,11 @@ class IvoryosClient:
             [
                 {'name': 'result', 'minimize': True}
             ]
+            steps: {'step_1': {'model': 'Sobol', 'num_samples': 5}, 'step_2': {'model': 'BoTorch'}}
             repeat: Number of iterations
             batch_size: Batch size
             parameter_constraints: List of parameter constraints
-
+            existing_data: Existing csv file name
         Returns:
             Response from the server
         """
